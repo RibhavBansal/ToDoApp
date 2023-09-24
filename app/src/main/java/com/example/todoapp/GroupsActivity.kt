@@ -60,6 +60,9 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
 
     override fun groupClicked(index: Int) {
         val intent = Intent(this,ItemsActivity::class.java)
+
+        intent.putExtra("groupIndex",index)
+
         startActivity(intent)
     }
 
