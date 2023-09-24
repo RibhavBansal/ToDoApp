@@ -3,13 +3,18 @@ package com.example.todoapp
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class GroupsActivity : AppCompatActivity() {
+    private var groupsAdapter : GroupsAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.groups)
@@ -18,6 +23,35 @@ class GroupsActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
 
         AppData.initialize()
-        rv.adapter = GroupsAdapter(AppData.groups)
+        groupsAdapter = GroupsAdapter(AppData.groups)
+        rv.adapter = groupsAdapter
+    }
+
+    fun createNewGroup(v : View)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("New Group")
+        builder.setMessage("Enter the name of group")
+
+        val inputText = EditText(this)
+        inputText.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(inputText)
+
+        builder.setPositiveButton("Save")
+        {_,_ ->
+            val groupName = inputText.text.toString()
+            val newGroup = Group(groupName, mutableListOf())
+
+            AppData.groups.add(newGroup)
+            groupsAdapter!!.notifyItemInserted(AppData.groups.count())
+        }
+
+        builder.setNegativeButton("Cancel")
+        {_,_ ->
+
+        }
+
+        val dialog : AlertDialog = builder.create()
+        dialog.show()
     }
 }
