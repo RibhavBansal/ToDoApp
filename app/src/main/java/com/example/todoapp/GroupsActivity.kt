@@ -1,6 +1,7 @@
 package com.example.todoapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
@@ -13,9 +14,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class GroupsActivity : AppCompatActivity() {
+class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
     private var groupsAdapter : GroupsAdapter? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.groups)
 
@@ -23,7 +26,7 @@ class GroupsActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
 
         AppData.initialize()
-        groupsAdapter = GroupsAdapter(AppData.groups)
+        groupsAdapter = GroupsAdapter(AppData.groups,this)
         rv.adapter = groupsAdapter
     }
 
@@ -53,5 +56,14 @@ class GroupsActivity : AppCompatActivity() {
 
         val dialog : AlertDialog = builder.create()
         dialog.show()
+    }
+
+    override fun groupClicked(index: Int) {
+        val intent = Intent(this,ItemsActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun groupLongClicked(index: Int) {
+
     }
 }
