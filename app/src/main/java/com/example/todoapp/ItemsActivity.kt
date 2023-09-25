@@ -22,9 +22,12 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
         val selectedIndex = intent.getIntExtra("groupIndex",0)
         currGroup = AppData.groups[selectedIndex]
 
-        var title = findViewById<TextView>(R.id.toolbarTitle)
+//        ToolBar
         var bar : Toolbar? = findViewById<Toolbar>(R.id.myToolbar)
+        setSupportActionBar(bar)
 
+//        Title TextView
+        var title = findViewById<TextView>(R.id.toolbarTitle)
         title.text = currGroup.name
 
         var rv = findViewById<RecyclerView>(R.id.itemsRecyclerView)
@@ -32,10 +35,6 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
 
         itemsAdapter = ItemsAdapter(currGroup, this)
         rv.adapter = itemsAdapter
-
-        setSupportActionBar(bar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         var editText = findViewById<EditText>(R.id.newItemEditText)
         editText.setOnKeyListener { view, keyCode, event ->
@@ -58,6 +57,9 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
             false
         }
 
+//        For Back Button
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
     }
 
     override fun onSupportNavigateUp(): Boolean {

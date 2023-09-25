@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
-    private var groupsAdapter : GroupsAdapter? = null
+    private lateinit var groupsAdapter : GroupsAdapter
+//    private var groupsAdapter : GroupsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
