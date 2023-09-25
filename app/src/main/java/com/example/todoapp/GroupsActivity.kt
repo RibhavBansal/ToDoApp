@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
     private var groupsAdapter : GroupsAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.groups)
 
@@ -30,8 +29,12 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
         rv.adapter = groupsAdapter
     }
 
-    fun createNewGroup(v : View)
-    {
+    override fun onResume() {
+        super.onResume()
+        groupsAdapter!!.notifyDataSetChanged()
+    }
+
+    fun createNewGroup(v : View) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("New Group")
         builder.setMessage("Enter the name of group")
@@ -64,9 +67,13 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
         intent.putExtra("groupIndex",index)
 
         startActivity(intent)
+
+//        overridePendingTransition(R.anim.slide_in_right,
+//                                    R.anim.slide_out_left)
     }
 
     override fun groupLongClicked(index: Int) {
-
+        AppData.groups.removeAt(index)
+        groupsAdapter!!.notifyItemRemoved(index)
     }
 }

@@ -65,12 +65,19 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
         return true
     }
 
+    override fun finish() {
+        super.finish()
+//        overridePendingTransition(R.anim.slide_in_left,
+//                                    R.anim.slide_out_right)
+    }
+
     override fun itemClicked(index: Int) {
         currGroup.items[index].completed = !currGroup.items[index].completed
         itemsAdapter!!.notifyDataSetChanged()
     }
 
     override fun itemLongClicked(index: Int) {
-
+        currGroup.items.removeAt(index)
+        itemsAdapter.notifyItemRemoved(index)
     }
 }
