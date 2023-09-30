@@ -88,10 +88,16 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
         builder.setPositiveButton("Save")
         {_,_ ->
             val groupName = inputText.text.toString()
-            val newGroup = Group(groupName, mutableListOf())
+            val newGroup = Groups(groupName)
+            val newGroupWithItems = GroupWithItems(newGroup, mutableListOf())
 
-            AppData.groups.add(newGroup)
+            AppData.groups.add(newGroupWithItems)
             groupsAdapter!!.notifyItemInserted(AppData.groups.count())
+
+            CoroutineScope(Dispatchers.IO).launch {
+                AppData.db.todoDao()
+                    .insertGroup(newGroup)
+            }
         }
 
         builder.setNegativeButton("Cancel")

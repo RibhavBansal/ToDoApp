@@ -22,7 +22,7 @@ class ItemsViewHolder(inflater: LayoutInflater,
         itemCheckBox = itemView.findViewById(R.id.itemCheckBox)
     }
 
-    fun bind(item : Item)
+    fun bind(item : Items)
     {
         itemNameTextView!!.text = item.name
         itemCheckBox!!.isChecked = item.completed

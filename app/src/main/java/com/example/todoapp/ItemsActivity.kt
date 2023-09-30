@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
-    private lateinit var currGroup : Group
+    private lateinit var groupWithItems: GroupWithItems
     private lateinit var itemsAdapter : ItemsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
         setContentView(R.layout.items)
 
         val selectedIndex = intent.getIntExtra("groupIndex",0)
-        currGroup = AppData.groups[selectedIndex]
+        groupWithItems = AppData.groups[selectedIndex]
 
 //        ToolBar
         var bar : Toolbar? = findViewById<Toolbar>(R.id.myToolbar)
@@ -28,12 +28,12 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
 
 //        Title TextView
         var title = findViewById<TextView>(R.id.toolbarTitle)
-        title.text = currGroup.name
+        title.text = groupWithItems.group.name
 
         var rv = findViewById<RecyclerView>(R.id.itemsRecyclerView)
         rv.layoutManager = LinearLayoutManager(this)
 
-        itemsAdapter = ItemsAdapter(currGroup, this)
+        itemsAdapter = ItemsAdapter(groupWithItems, this)
         rv.adapter = itemsAdapter
 
         var editText = findViewById<EditText>(R.id.newItemEditText)
@@ -43,9 +43,9 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
                 if(event.action == KeyEvent.ACTION_DOWN)
                 {
                     val name: String = editText.text.toString()
-                    val item = Item(name,false)
-                    currGroup.items.add(item)
-                    itemsAdapter.notifyItemInserted(currGroup.items.count())
+                    val item = Items(name,groupWithItems.group.name,false)
+                    groupWithItems.items.add(item)
+                    itemsAdapter.notifyItemInserted(groupWithItems.items.count())
                     editText.text.clear()
 
                     val inputManager =
@@ -74,12 +74,12 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
     }
 
     override fun itemClicked(index: Int) {
-        currGroup.items[index].completed = !currGroup.items[index].completed
+        groupWithItems.items[index].completed = !groupWithItems.items[index].completed
         itemsAdapter!!.notifyDataSetChanged()
     }
 
     override fun itemLongClicked(index: Int) {
-        currGroup.items.removeAt(index)
+        groupWithItems.items.removeAt(index)
         itemsAdapter.notifyItemRemoved(index)
     }
 }
