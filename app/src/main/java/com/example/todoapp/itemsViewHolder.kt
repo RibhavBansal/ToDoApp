@@ -20,6 +20,19 @@ class ItemsViewHolder(inflater: LayoutInflater,
     init {
         itemNameTextView = itemView.findViewById(R.id.itemNameTextView)
         itemCheckBox = itemView.findViewById(R.id.itemCheckBox)
+
+        itemCheckBox?.setOnClickListener {
+            if(itemCheckBox!!.isChecked) {
+                itemNameTextView!!.paintFlags = itemNameTextView!!.paintFlags or
+                        Paint.STRIKE_THRU_TEXT_FLAG
+                itemView.setBackgroundColor(Color.LTGRAY)
+            }
+            else{
+                itemNameTextView!!.paintFlags = itemNameTextView!!.paintFlags and
+                        Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                itemView.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
     }
 
     fun bind(item : Items)
