@@ -10,6 +10,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
     private lateinit var groupWithItems: GroupWithItems
@@ -45,6 +48,11 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
                     val name: String = editText.text.toString()
                     val item = Items(name,groupWithItems.group.name,false)
                     groupWithItems.items.add(item)
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        AppData.db.todoDao().insertItem(item)
+                    }
+
                     itemsAdapter.notifyItemInserted(groupWithItems.items.count())
                     editText.text.clear()
 
@@ -74,11 +82,24 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
     }
 
     override fun itemClicked(index: Int) {
-        groupWithItems.items[index].completed = !groupWithItems.items[index].completed
+        val item = groupWithItems.items[index]
+        item.completed = !(item.completed)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            AppData.db.todoDao().updateItem(item.groupName,item.name,item.completed)
+        }
+
         itemsAdapter!!.notifyDataSetChanged()
     }
 
     override fun itemLongClicked(index: Int) {
+        val groupName = groupWithItems.group.name
+        val itemName = groupWithItems.items[index].name
+
+        CoroutineScope(Dispatchers.IO).launch {
+            AppData.db.todoDao().deleteItem(groupName,itemName)
+        }
+
         groupWithItems.items.removeAt(index)
         itemsAdapter.notifyItemRemoved(index)
     }

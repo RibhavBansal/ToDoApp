@@ -121,7 +121,17 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
     }
 
     override fun groupLongClicked(index: Int) {
+        val groupName = AppData.groups[index].group.name
+
+        CoroutineScope(Dispatchers.IO).launch {
+            AppData.db.todoDao()
+                .deleteGroup(groupName)
+            AppData.db.todoDao()
+                .deleteItemsOfGroup(groupName)
+        }
+
         AppData.groups.removeAt(index)
         groupsAdapter!!.notifyItemRemoved(index)
+        groupsAdapter!!.notifyItemRangeChanged(index,AppData.groups.count())
     }
 }
