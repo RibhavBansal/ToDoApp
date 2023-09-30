@@ -7,7 +7,7 @@ class AppData
     companion object DataHolder
     {
         var dbFileName = "Todo_db"
-        lateinit var db : Database
+        lateinit var db : TodoDatabase
 
         var groups: MutableList<GroupWithItems> = mutableListOf()
 

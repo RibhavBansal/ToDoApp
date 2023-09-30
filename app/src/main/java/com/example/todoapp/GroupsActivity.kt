@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.*
 import java.io.File
 
 class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
@@ -38,8 +39,17 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
         groupsAdapter = GroupsAdapter(AppData.groups,this)
         rv.adapter = groupsAdapter
 
+        AppData.db = TodoDatabase.getDatabase(this)
         if(dbexists()){
-
+            CoroutineScope(Dispatchers.IO).launch {
+                AppData.groups =
+                        AppData.db.todoDao()
+                            .getGroupsWithItems()
+                withContext(Dispatchers.Main){
+                    groupsAdapter = GroupsAdapter(AppData.groups,this)
+                    rv.adapter = groupsAdapter
+                }
+            }
         }
         else{
             AppData.initialize()
