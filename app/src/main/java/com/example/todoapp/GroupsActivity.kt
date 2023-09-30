@@ -46,7 +46,7 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
                         AppData.db.todoDao()
                             .getGroupsWithItems()
                 withContext(Dispatchers.Main){
-                    groupsAdapter = GroupsAdapter(AppData.groups,this)
+                    groupsAdapter = GroupsAdapter(AppData.groups,this@GroupsActivity)
                     rv.adapter = groupsAdapter
                 }
             }
@@ -55,6 +55,19 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
             AppData.initialize()
             groupsAdapter = GroupsAdapter(AppData.groups,this)
             rv.adapter = groupsAdapter
+
+            CoroutineScope(Dispatchers.IO).launch {
+                for (groupWithItems in AppData.groups)
+                {
+                    AppData.db.todoDao()
+                        .insertGroup(groupWithItems.group)
+
+                    for (item in groupWithItems.items)
+                    {
+                        AppData.db.todoDao().insertItem(item)
+                    }
+                }
+            }
         }
     }
 
