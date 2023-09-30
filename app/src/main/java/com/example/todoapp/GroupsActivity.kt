@@ -13,10 +13,20 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.File
 
 class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
     private lateinit var groupsAdapter : GroupsAdapter
 //    private var groupsAdapter : GroupsAdapter? = null
+
+    private fun dbexists(): Boolean
+    {
+        return try {
+            File(getDatabasePath(AppData.dbFileName).absolutePath).exists()
+        }catch (e: Exception){
+            false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +35,17 @@ class GroupsActivity : AppCompatActivity(), OnGroupClickListeners {
         val rv = findViewById<RecyclerView>(R.id.groupsRecyclerView)
         rv.layoutManager = LinearLayoutManager(this)
 
-        AppData.initialize()
         groupsAdapter = GroupsAdapter(AppData.groups,this)
         rv.adapter = groupsAdapter
+
+        if(dbexists()){
+
+        }
+        else{
+            AppData.initialize()
+            groupsAdapter = GroupsAdapter(AppData.groups,this)
+            rv.adapter = groupsAdapter
+        }
     }
 
     override fun onResume() {
