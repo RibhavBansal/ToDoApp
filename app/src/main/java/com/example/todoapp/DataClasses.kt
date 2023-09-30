@@ -11,6 +11,7 @@ data class Items(@ColumnInfo(name = "item_name") val name: String,
     @PrimaryKey(autoGenerate = true) var id = 0
 }
 
+@Entity
 data class Groups(@ColumnInfo(name = "group_name")val name: String)
 {
     @PrimaryKey(autoGenerate = true)var id = 0
