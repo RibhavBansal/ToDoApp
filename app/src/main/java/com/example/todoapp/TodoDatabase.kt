@@ -18,7 +18,7 @@ abstract  class TodoDatabase : RoomDatabase()
                 {
                     instance = Room.databaseBuilder(context.applicationContext,
                                     TodoDatabase::class.java,
-                                    "temporary_name").build()
+                                    AppData.dbFileName).build()
                 }
             }
             return instance!!
