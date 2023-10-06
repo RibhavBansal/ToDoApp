@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
-    private lateinit var groupWithItems: GroupWithItems
+    private lateinit var thisGroup: Group
     private lateinit var itemsAdapter : ItemsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,7 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
         setContentView(R.layout.items)
 
         val selectedIndex = intent.getIntExtra("groupIndex",0)
-        groupWithItems = AppData.groups[selectedIndex]
+        thisGroup = AppData.groups[selectedIndex]
 
 //        ToolBar
         var bar : Toolbar? = findViewById<Toolbar>(R.id.myToolbar)
@@ -31,12 +31,12 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
 
 //        Title TextView
         var title = findViewById<TextView>(R.id.toolbarTitle)
-        title.text = groupWithItems.group.name
+        title.text = thisGroup.name
 
         var rv = findViewById<RecyclerView>(R.id.itemsRecyclerView)
         rv.layoutManager = LinearLayoutManager(this)
 
-        itemsAdapter = ItemsAdapter(groupWithItems, this)
+        itemsAdapter = ItemsAdapter(thisGroup, this)
         rv.adapter = itemsAdapter
 
         var editText = findViewById<EditText>(R.id.newItemEditText)
@@ -46,15 +46,13 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
                 if(event.action == KeyEvent.ACTION_DOWN)
                 {
                     val name: String = editText.text.toString()
-                    val item = Items(name,groupWithItems.group.name,false)
-                    groupWithItems.items.add(item)
+                    val item = Item(name,false)
+                    thisGroup.items.add(item)
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        AppData.db.todoDao().insertItem(item)
-                    }
-
-                    itemsAdapter.notifyItemInserted(groupWithItems.items.count())
+                    itemsAdapter.notifyItemInserted(thisGroup.items.count())
                     editText.text.clear()
+
+                    SaveOnCloud.saveItem(item, thisGroup)
 
                     val inputManager =
                         getSystemService(Activity.INPUT_METHOD_SERVICE)
@@ -82,25 +80,21 @@ class ItemsActivity : AppCompatActivity(), OnItemClickListeners {
     }
 
     override fun itemClicked(index: Int) {
-        val item = groupWithItems.items[index]
+        val item = thisGroup.items[index]
         item.completed = !(item.completed)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            AppData.db.todoDao().updateItem(item.groupName,item.name,item.completed)
-        }
-
         itemsAdapter!!.notifyDataSetChanged()
+
+        SaveOnCloud.saveItem(item,thisGroup)
     }
 
     override fun itemLongClicked(index: Int) {
-        val groupName = groupWithItems.group.name
-        val itemName = groupWithItems.items[index].name
+        val groupName = thisGroup.name
+        val itemName = thisGroup.items[index].name
 
-        CoroutineScope(Dispatchers.IO).launch {
-            AppData.db.todoDao().deleteItem(groupName,itemName)
-        }
+        DeleteOnCloud.deleteItem(thisGroup.items[index],thisGroup)
 
-        groupWithItems.items.removeAt(index)
+        thisGroup.items.removeAt(index)
         itemsAdapter.notifyItemRemoved(index)
     }
 }

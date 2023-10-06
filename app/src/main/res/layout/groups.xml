@@ -30,4 +30,15 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
+    <Button
+        android:id="@+id/profileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:background="#CDCB2D"
+        android:onClick="cloudFunctions"
+        android:text="Login!"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
+
 </LinearLayout>

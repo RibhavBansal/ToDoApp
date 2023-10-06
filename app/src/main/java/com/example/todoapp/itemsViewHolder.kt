@@ -21,7 +21,24 @@ class ItemsViewHolder(inflater: LayoutInflater,
         itemNameTextView = itemView.findViewById(R.id.itemNameTextView)
         itemCheckBox = itemView.findViewById(R.id.itemCheckBox)
 
-        itemCheckBox?.setOnClickListener {
+//        itemCheckBox?.setOnClickListener {
+//            if(itemCheckBox!!.isChecked) {
+//                itemNameTextView!!.paintFlags = itemNameTextView!!.paintFlags or
+//                        Paint.STRIKE_THRU_TEXT_FLAG
+//                itemView.setBackgroundColor(Color.LTGRAY)
+//            }
+//            else{
+//                itemNameTextView!!.paintFlags = itemNameTextView!!.paintFlags and
+//                        Paint.STRIKE_THRU_TEXT_FLAG.inv()
+//                itemView.setBackgroundColor(Color.TRANSPARENT)
+//            }
+//        }
+    }
+
+    fun bind(item : Item, group: Group)
+    {
+        itemCheckBox!!.setOnClickListener{
+            item.completed = itemCheckBox!!.isChecked
             if(itemCheckBox!!.isChecked) {
                 itemNameTextView!!.paintFlags = itemNameTextView!!.paintFlags or
                         Paint.STRIKE_THRU_TEXT_FLAG
@@ -32,11 +49,9 @@ class ItemsViewHolder(inflater: LayoutInflater,
                         Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 itemView.setBackgroundColor(Color.TRANSPARENT)
             }
+            SaveOnCloud.saveItem(item,group)
         }
-    }
 
-    fun bind(item : Items)
-    {
         itemNameTextView!!.text = item.name
         itemCheckBox!!.isChecked = item.completed
 

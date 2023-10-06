@@ -1,22 +1,51 @@
 package com.example.todoapp
 
-import androidx.constraintlayout.widget.Group
-import androidx.room.*
-
-@Entity
-data class Items(@ColumnInfo(name = "item_name") val name: String,
-                 @ColumnInfo(name = "group_name") val groupName: String,
-                var completed: Boolean)
+data class Item(
+    var name: String,
+    var completed: Boolean)
 {
-    @PrimaryKey(autoGenerate = true) var id = 0
+    constructor(map: HashMap<String,String>): this("",false)
+    {
+        this.name = map["name"] as String
+        if(map["completed"].toString() == "true")
+            this.completed = true
+    }
 }
 
-@Entity
-data class Groups(@ColumnInfo(name = "group_name")val name: String)
+data class Group(
+    var name: String,
+    var items: MutableList<Item>)
 {
-    @PrimaryKey(autoGenerate = true)var id = 0
-}
+    constructor(map: HashMap<String,Any>): this("", mutableListOf())
+    {
+        this.name = map["name"] as String
 
-data class GroupWithItems(@Embedded val group: Groups,
-                          @Relation(parentColumn = "group_name",
-                          entityColumn = "group_name") val items: MutableList<Items>)
+        if(map["items"] != null) {
+            var itemsInMap = map["items"] as HashMap<String, Any>
+            for (each in itemsInMap.values) {
+                each as HashMap<String, String>
+                this.items.add(Item(each))
+            }
+        }
+    }
+
+    fun toMap(): HashMap<String,Any>
+    {
+        var groupMap = HashMap<String,Any>()
+        groupMap["name"] = this.name
+
+        var items = HashMap<String,Any>()
+        for(item in this.items)
+        {
+            var eachItemMap = HashMap<String,String>()
+            eachItemMap["name"] = item.name
+            eachItemMap["completed"] = item.completed.toString()
+
+            items[item.name] = eachItemMap
+        }
+
+        groupMap["items"] = items
+
+        return groupMap
+    }
+}

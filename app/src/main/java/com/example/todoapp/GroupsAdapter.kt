@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class GroupsAdapter(private val list : List<GroupWithItems>,
+class GroupsAdapter(private val list : List<Group>,
                     listenerContext : OnGroupClickListeners)
     : RecyclerView.Adapter<GroupsViewHolder>()
 {
@@ -18,8 +18,8 @@ class GroupsAdapter(private val list : List<GroupWithItems>,
 
     override fun onBindViewHolder(holder: GroupsViewHolder, position: Int)
     {
-        val groupWithItems = list[position]
-        holder.bind(groupWithItems)
+        val group = list[position]
+        holder.bind(group)
 
         holder.itemView.setOnClickListener{
             myInterface.groupClicked(position)
