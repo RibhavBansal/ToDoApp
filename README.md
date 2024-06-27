@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/TD/TD1.jpg"/>
+  <img src="/TD/TD1.jpg" width="200"/>
 
 <p align="center">
   <img src="/TD/TD2.jpg"/>
